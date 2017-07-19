@@ -21,24 +21,17 @@ public class DictionaryTrieImpl implements Dictionary {
     private final Map<Character, Node> roots;
     private final Map<Character, MutableInt> letterFrequency;
     private final List<Entry<Character, MutableInt>> sortedLetters;
-    private final List<WordFrequency> wordFrequencies;
-    private final List<String> longestWords;
-    private boolean wasUpdated;
 
     // Constructors
     public DictionaryTrieImpl() {
         roots = new HashMap<>();
         letterFrequency = new HashMap<>();
         sortedLetters = new ArrayList<>();
-        wordFrequencies = new ArrayList<>();
-        longestWords = new ArrayList<>();
-        wasUpdated = true;
     }
 
     // Override Methods
     @Override
     public int getWordFrequency(String string) {
-
         if (string == null || string.isEmpty()) {
             return -1;
         }
@@ -64,8 +57,6 @@ public class DictionaryTrieImpl implements Dictionary {
             return;
         }
 
-        wasUpdated = true;
-
         if (!roots.containsKey(string.charAt(0))) {
             roots.put(string.charAt(0), new Node());
         }
@@ -81,34 +72,26 @@ public class DictionaryTrieImpl implements Dictionary {
 
     @Override
     public Character getMostFrequentLetter() {
-        if (wasUpdated) {
-            sortedLetters.clear();
-            sortedLetters.addAll(letterFrequency.entrySet());
+        sortedLetters.clear();
+        sortedLetters.addAll(letterFrequency.entrySet());
 
-            // Sort the characters decreasing with respect to their frequency
-            Collections.sort(sortedLetters,
-                    (Entry<Character, MutableInt> o1,
-                            Entry<Character, MutableInt> o2) -> {
-                        return o2.getValue().get() - o1.getValue().get();
-                    });
-
-            wasUpdated = false;
-        }
+        // Sort the characters decreasing with respect to their frequency
+        Collections.sort(sortedLetters,
+                (Entry<Character, MutableInt> o1,
+                        Entry<Character, MutableInt> o2) -> {
+                    return o2.getValue().get() - o1.getValue().get();
+                });
 
         if (sortedLetters.isEmpty()) {
             return null;
         }
-        
+
         return sortedLetters.get(0).getKey();
     }
 
     @Override
     public List<WordFrequency> getWordFrequencies() {
-        if (!wasUpdated) {
-            return wordFrequencies;
-        }
-
-        wordFrequencies.clear();
+        List<WordFrequency> wordFrequencies = new ArrayList<>();
 
         roots.forEach((prefix, node) -> {
             if (node.getWordCount() > 0) {
@@ -130,11 +113,7 @@ public class DictionaryTrieImpl implements Dictionary {
 
     @Override
     public List<String> getLongestWords() {
-        if (!wasUpdated) {
-            return longestWords;
-        }
-
-        longestWords.clear();
+        List<String> longestWords = new ArrayList<>();
 
         MutableInt wordLength = new MutableInt();
         wordLength.set(0);
@@ -257,7 +236,7 @@ public class DictionaryTrieImpl implements Dictionary {
 
     /**
      * Recursive method to search for the longest words in the Trie.
-     * 
+     *
      * @param str current prefix
      * @param curMax current maximum length of found word
      * @param curNode node to recursively search in
@@ -292,7 +271,7 @@ public class DictionaryTrieImpl implements Dictionary {
      * A node of the Trie tree.
      */
     private class Node {
-        
+
         // Attributes
         private int wordCount;   // if 0, the current path is not a word
         private Map<Character, Node> children;
@@ -302,21 +281,21 @@ public class DictionaryTrieImpl implements Dictionary {
             this.wordCount = 0;
             this.children = new HashMap<>();
         }
-        
+
         // Getters
         public int getWordCount() {
             return wordCount;
         }
-        
+
         public Map<Character, Node> getChildren() {
             return children;
         }
-        
+
         // Setters
         public void setWordCount(int count) {
             wordCount = count;
         }
-        
+
         // Public Methods
         public void incrementWordCount() {
             wordCount++;
