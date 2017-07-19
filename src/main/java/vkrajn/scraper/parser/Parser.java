@@ -43,7 +43,8 @@ public abstract class Parser {
         */
         
         // Match against the pattern
-        Pattern p = Pattern.compile("[\\w']+", Pattern.UNICODE_CHARACTER_CLASS);
+        Pattern p = Pattern.compile("[\\w'&&[^\\d]]+",
+                Pattern.UNICODE_CHARACTER_CLASS);
         Matcher m = p.matcher(text);
 
         while (m.find()) {
