@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import vkrajn.scraper.data.WordFrequency;
+import vkrajn.scraper.utils.MutableInt;
 
 /**
  * A {@link Dictionary} implemented using a Trie.
@@ -319,35 +320,6 @@ public class DictionaryTrieImpl implements Dictionary {
         // Public Methods
         public void incrementWordCount() {
             wordCount++;
-        }
-    }
-
-    /**
-     * An integer class which is initialized to 1, can never contain null.
-     */
-    private class MutableInt {
-        
-        // Attributes
-        private int value;
-
-        // Constructors
-        private MutableInt() {
-            this.value = 1;
-        }
-
-        // Getters
-        public int get() {
-            return value;
-        }
-        
-        // Setters
-        public void set(int value) {
-            this.value = value;
-        }
-        
-        // Public Methods
-        public void increment() {
-            ++value;
         }
     }
 }
