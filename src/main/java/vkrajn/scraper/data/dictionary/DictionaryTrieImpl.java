@@ -31,6 +31,25 @@ public class DictionaryTrieImpl implements Dictionary {
 
     // Override Methods
     @Override
+    public void insert(String string) {
+        if (string == null || string.length() == 0) {
+            return;
+        }
+
+        if (!roots.containsKey(string.charAt(0))) {
+            roots.put(string.charAt(0), new Node());
+        }
+
+        increaseLetterFreq(string.charAt(0));
+
+        /*
+            Recursively traverse the tree to add all the characters
+            or increment the number of words if it exists
+         */
+        insertWord(string.substring(1), roots.get(string.charAt(0)));
+    }
+
+    @Override
     public int getWordFrequency(String string) {
         if (string == null || string.isEmpty()) {
             return -1;
@@ -52,35 +71,14 @@ public class DictionaryTrieImpl implements Dictionary {
     }
 
     @Override
-    public void insert(String string) {
-        if (string == null || string.length() == 0) {
-            return;
-        }
-
-        if (!roots.containsKey(string.charAt(0))) {
-            roots.put(string.charAt(0), new Node());
-        }
-
-        increaseLetterFreq(string.charAt(0));
-
-        /*
-            Recursively traverse the tree to add all the characters
-            or increment the number of words if it exists
-         */
-        insertWord(string.substring(1), roots.get(string.charAt(0)));
-    }
-
-    @Override
     public Character getMostFrequentLetter() {
         sortedLetters.clear();
         sortedLetters.addAll(letterFrequency.entrySet());
 
         // Sort the characters decreasing with respect to their frequency
-        Collections.sort(sortedLetters,
-                (Entry<Character, MutableInt> o1,
-                        Entry<Character, MutableInt> o2) -> {
-                    return o2.getValue().get() - o1.getValue().get();
-                });
+        Collections.sort(sortedLetters, (o1, o2) -> {
+            return o2.getValue().get() - o1.getValue().get();
+        });
 
         if (sortedLetters.isEmpty()) {
             return null;
@@ -274,7 +272,7 @@ public class DictionaryTrieImpl implements Dictionary {
 
         // Attributes
         private int wordCount;   // if 0, the current path is not a word
-        private Map<Character, Node> children;
+        private final Map<Character, Node> children;
 
         // Constructors
         private Node() {
